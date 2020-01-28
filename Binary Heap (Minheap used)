@@ -1,0 +1,140 @@
+//Time complexity ; O(logn)
+#include <bits/stdc++.h>
+using namespace std;
+
+class MinHeap 
+{
+    int heap_size;  // current heap_size 
+    int capacity;   // total capacity
+    int *harr;      // array to hold elements 
+    
+   public:
+   
+   MinHeap(int cap)
+   {
+        heap_size = 0;
+    capacity=cap;
+    harr = new int[cap];
+   }
+   
+   int parent(int i) { return (i-1)/2; }
+    
+   int leftchild(int i) { return (2*i + 1); }
+   
+   int righchild(int i) { return (2*i + 2); }
+   
+   int getMin() {return harr[0]; } 
+   
+   void insert(int data);
+   
+   void deletek(int i);
+   
+   void decrease(int i,int value);
+   
+   int extractMin();
+   
+   void MinHeapify(int i);
+   
+};
+
+void swap(int *a,int *b)
+{
+    int t=*a;
+    *a=*b;
+    *b=t;
+}
+
+
+void MinHeap::insert(int data) 
+{ 
+    if (heap_size == capacity) 
+    { 
+       printf("\nOverflow Found");
+        return; 
+    } 
+  
+    // insert the data
+    heap_size++; 
+    int i = heap_size - 1; 
+    harr[i] = data; 
+  
+    // check for violation;
+    while (i != 0 && harr[parent(i)] > harr[i]) 
+    { 
+       swap(&harr[i], &harr[parent(i)]); 
+       i = parent(i); 
+    } 
+} 
+
+void MinHeap::decrease(int i,int value)
+{
+    harr[i] = value;
+    
+    while(i!=0 && harr[parent(i)] > harr[i])
+    {
+        swap(&harr[i],&harr[parent(i)]);
+        i = parent(i);
+    }
+    
+}
+
+int MinHeap::extractMin()
+{
+    if(heap_size <= 0)
+    return INT_MAX;
+    if(heap_size == 1)
+    {
+        heap_size--;
+        return harr[0];
+    }
+    
+    // remove root from heap
+    int root = harr[0];
+    harr[0] = harr[heap_size-1];
+    heap_size--;
+    MinHeapify(0);
+    
+    return root;
+    
+}
+
+void MinHeap::deletek(int i)
+{
+    decrease(i,INT_MIN);
+    extractMin();
+}
+
+void MinHeap::MinHeapify(int i)
+{
+    int l = leftchild(i);
+    int r = righchild(i);
+    int small = i;
+    
+    if(l < heap_size && harr[l] < harr[i])
+    small = l;
+    if(r < heap_size && harr[r] < harr[i])
+    small = r;
+    if(small !=i)
+    {
+        swap(&harr[i],&harr[small]);
+        MinHeapify(small);
+    }
+}
+
+int main()
+{
+  MinHeap h(11); 
+  h.insert(2);
+  h.insert(3);
+  h.deletek(2);
+  h.insert(15);
+  h.insert(4);
+  
+   printf("%d %d ",h.extractMin(),h.getMin()); 
+   
+  h.decrease(2,1);
+  
+  printf("%d %d",h.extractMin(),h.getMin());
+
+    return 0;
+}
