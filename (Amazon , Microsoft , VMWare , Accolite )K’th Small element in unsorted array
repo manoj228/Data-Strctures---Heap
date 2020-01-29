@@ -1,0 +1,95 @@
+//Time complexity : O(n + klogn) better than O(logn)
+//Minheap
+#include <bits/stdc++.h>
+using namespace std;
+
+class Minheap
+{
+    int *harr;
+    int heap_size;
+    
+    public :  
+    
+    Minheap(int a[],int size);
+    
+    void minheapify(int i);
+    
+    int parent(int i) { return (i - 1)  / 2 ; }
+    
+    int left(int i) { return (2 * i + 1) ; }
+    
+    int right(int i) { return (2 * i + 2) ; }
+    
+    int extractMin() ; // to get min(root) element
+    
+    int getMin() { return harr[0]; }
+};
+
+Minheap :: Minheap(int a[],int size)
+{
+    harr = a;
+    heap_size = size;
+    int i = (heap_size - 1)/2;
+    
+    while(i >= 0)
+    {
+        minheapify(i);
+        i--;
+    }
+}
+
+void Minheap::minheapify(int i)
+{
+    int small = i ;
+    int l = left(i) , r = right(i) ;
+    
+    if(l < heap_size && harr[l] < harr[i])
+    small = l;
+    
+    if(r < heap_size && harr[r] < harr[small])
+    small = r;
+    
+    if(small != i)
+    {
+        swap(harr[i],harr[small]);
+        minheapify(small);
+    }
+    
+}
+
+int Minheap :: extractMin()
+{
+    if(heap_size == 0)
+    return INT_MAX;
+    
+    int root = harr[0];
+    
+    if(heap_size > 1)
+    {
+        harr[0] = harr[heap_size - 1];
+        minheapify(0);
+    }
+    heap_size--;
+    
+    return root;
+    
+}
+
+int kthsmallestEle(int a[],int n,int k)
+{
+    Minheap mp(a,n);
+    
+    //remove min upto k-1 
+    for(int i = 0; i < k - 1 ; i++)
+    mp.extractMin();
+    
+    return mp.getMin();
+}
+int main()
+{
+    int a[] = {12,3,5,7,19};
+    int n = sizeof(a) / sizeof(a[0]) , k = 2 ;
+    printf("%d ",kthsmallestEle(a,n,k));
+
+    return 0;
+}
