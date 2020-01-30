@@ -1,0 +1,106 @@
+// Time complexity : O(n logn)
+#include <bits/stdc++.h>
+using namespace std;
+
+class Minheap
+{
+    int *harr;
+    int heap_size;
+    int capacity;
+    
+    public :
+    
+    void minheapify(int );
+    
+    int parent(int i) { return (i - 1)/2; }
+    
+    int left(int i) { return (2*i + 1); }
+    
+    int right(int i) { return (2*i + 2); }
+    
+    Minheap(int cap); 
+    
+    void insert(int);
+    
+    void printSmall(int , int );
+};
+
+Minheap :: Minheap(int cap)
+{
+  heap_size = 0;
+  capacity = cap;
+  harr = new int[cap];
+}
+
+void Minheap :: minheapify(int i)
+{
+   int small = i;
+   int l = left(i);
+   int r = right(i);
+   
+   if(l < heap_size && harr[l] < harr[i])
+   small = l;
+   if(r < heap_size && harr[r] < harr[small])
+   small = r;
+   
+   if(small != i)
+   {
+       swap(harr[i],harr[small]);
+       minheapify(small);
+   }
+}
+
+void Minheap :: insert(int data)
+{
+    if(heap_size == capacity)
+    {
+        printf("Overflow occurs");
+        return;
+    }
+    
+    heap_size++;
+    int i = heap_size - 1;
+    harr[i] = data;
+    
+    //fix the heap property if it is violated
+    while(i != 0 && harr[parent(i)] > harr[i])
+    {
+        swap(harr[i],harr[parent(i)]);
+        i = parent(i);
+    }
+}
+
+void Minheap :: printSmall(int x,int pos = 0)
+{
+    if(pos >= heap_size)
+    return;
+    
+    if(harr[pos] >= x)
+    return;
+    
+    printf("%d ",harr[pos]);
+    
+    printSmall(x,left(pos));
+    printSmall(x,right(pos));
+}
+
+int main()
+{
+    Minheap h(50); 
+    h.insert(3); 
+    h.insert(2); 
+    h.insert(15); 
+    h.insert(5); 
+    h.insert(4); 
+    h.insert(45); 
+    h.insert(80); 
+    h.insert(6); 
+    h.insert(150); 
+    h.insert(77); 
+    h.insert(120); 
+    
+    int x = 100;
+    h.printSmall(x);
+
+    return 0;
+}
